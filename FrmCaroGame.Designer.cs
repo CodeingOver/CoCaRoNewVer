@@ -1,0 +1,118 @@
+﻿namespace CoCaRo
+{
+    partial class FrmCaroGame
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.label1 = new System.Windows.Forms.Label();
+            this.LblPlayer = new System.Windows.Forms.Label();
+            this.BtnNewGame = new System.Windows.Forms.Button();
+            this.BtnRestart = new System.Windows.Forms.Button();
+            this.BtnBack = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // label1
+            // 
+            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label1.Font = new System.Drawing.Font("Times New Roman", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.OrangeRed;
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(1202, 112);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Cờ ca rô";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // LblPlayer
+            // 
+            this.LblPlayer.AutoSize = true;
+            this.LblPlayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblPlayer.Location = new System.Drawing.Point(1051, 56);
+            this.LblPlayer.Name = "LblPlayer";
+            this.LblPlayer.Size = new System.Drawing.Size(77, 25);
+            this.LblPlayer.TabIndex = 2;
+            this.LblPlayer.Text = "Lblhere";
+            // 
+            // BtnNewGame
+            // 
+            this.BtnNewGame.Location = new System.Drawing.Point(179, 36);
+            this.BtnNewGame.Name = "BtnNewGame";
+            this.BtnNewGame.Size = new System.Drawing.Size(120, 45);
+            this.BtnNewGame.TabIndex = 3;
+            this.BtnNewGame.Text = "Game mới";
+            this.BtnNewGame.UseVisualStyleBackColor = true;
+            this.BtnNewGame.Visible = false;
+            this.BtnNewGame.Click += new System.EventHandler(this.BtnNewGame_Click);
+            // 
+            // BtnRestart
+            // 
+            this.BtnRestart.Location = new System.Drawing.Point(22, 36);
+            this.BtnRestart.Name = "BtnRestart";
+            this.BtnRestart.Size = new System.Drawing.Size(120, 45);
+            this.BtnRestart.TabIndex = 3;
+            this.BtnRestart.Text = "Chơi lại";
+            this.BtnRestart.UseVisualStyleBackColor = true;
+            this.BtnRestart.Click += new System.EventHandler(this.BtnNewGame_Click);
+            // 
+            // BtnBack
+            // 
+            this.BtnBack.Location = new System.Drawing.Point(327, 36);
+            this.BtnBack.Name = "BtnBack";
+            this.BtnBack.Size = new System.Drawing.Size(120, 45);
+            this.BtnBack.TabIndex = 3;
+            this.BtnBack.Text = "Quay lại";
+            this.BtnBack.UseVisualStyleBackColor = true;
+            this.BtnBack.Click += new System.EventHandler(this.BtnBack_Click);
+            // 
+            // FrmCaroGame
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1202, 703);
+            this.Controls.Add(this.BtnBack);
+            this.Controls.Add(this.BtnRestart);
+            this.Controls.Add(this.BtnNewGame);
+            this.Controls.Add(this.LblPlayer);
+            this.Controls.Add(this.label1);
+            this.Name = "FrmCaroGame";
+            this.Text = "CaroGame";
+            this.Load += new System.EventHandler(this.FrmCaroGame_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label LblPlayer;
+        private System.Windows.Forms.Button BtnNewGame;
+        private System.Windows.Forms.Button BtnRestart;
+        private System.Windows.Forms.Button BtnBack;
+    }
+}
+
