@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.PnlVfrm = new System.Windows.Forms.Panel();
-            this.BtnPlay = new System.Windows.Forms.Button();
-            this.BtnMutiplayer = new System.Windows.Forms.Button();
             this.BtnHuongdan = new System.Windows.Forms.Button();
+            this.BtnMutiplayer = new System.Windows.Forms.Button();
+            this.BtnPlay = new System.Windows.Forms.Button();
             this.PnlVfrm.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,17 +46,17 @@
             this.PnlVfrm.Size = new System.Drawing.Size(1202, 703);
             this.PnlVfrm.TabIndex = 0;
             // 
-            // BtnPlay
+            // BtnHuongdan
             // 
-            this.BtnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnPlay.Location = new System.Drawing.Point(682, 160);
-            this.BtnPlay.Name = "BtnPlay";
-            this.BtnPlay.Size = new System.Drawing.Size(194, 77);
-            this.BtnPlay.TabIndex = 0;
-            this.BtnPlay.TabStop = false;
-            this.BtnPlay.Text = "Chơi đơn";
-            this.BtnPlay.UseVisualStyleBackColor = true;
-            this.BtnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
+            this.BtnHuongdan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnHuongdan.Location = new System.Drawing.Point(682, 395);
+            this.BtnHuongdan.Name = "BtnHuongdan";
+            this.BtnHuongdan.Size = new System.Drawing.Size(194, 77);
+            this.BtnHuongdan.TabIndex = 0;
+            this.BtnHuongdan.TabStop = false;
+            this.BtnHuongdan.Text = "Hướng dẫn";
+            this.BtnHuongdan.UseVisualStyleBackColor = true;
+            this.BtnHuongdan.Click += new System.EventHandler(this.BtnHuongdan_Click);
             // 
             // BtnMutiplayer
             // 
@@ -70,17 +70,17 @@
             this.BtnMutiplayer.UseVisualStyleBackColor = true;
             this.BtnMutiplayer.Click += new System.EventHandler(this.BtnMutiplayer_Click);
             // 
-            // BtnHuongdan
+            // BtnPlay
             // 
-            this.BtnHuongdan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnHuongdan.Location = new System.Drawing.Point(682, 395);
-            this.BtnHuongdan.Name = "BtnHuongdan";
-            this.BtnHuongdan.Size = new System.Drawing.Size(194, 77);
-            this.BtnHuongdan.TabIndex = 0;
-            this.BtnHuongdan.TabStop = false;
-            this.BtnHuongdan.Text = "Hướng dẫn";
-            this.BtnHuongdan.UseVisualStyleBackColor = true;
-            this.BtnHuongdan.Click += new System.EventHandler(this.BtnPlay_Click);
+            this.BtnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnPlay.Location = new System.Drawing.Point(682, 160);
+            this.BtnPlay.Name = "BtnPlay";
+            this.BtnPlay.Size = new System.Drawing.Size(194, 77);
+            this.BtnPlay.TabIndex = 0;
+            this.BtnPlay.TabStop = false;
+            this.BtnPlay.Text = "Chơi đơn";
+            this.BtnPlay.UseVisualStyleBackColor = true;
+            this.BtnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
             // 
             // FrmMain
             // 
@@ -89,7 +89,7 @@
             this.ClientSize = new System.Drawing.Size(1202, 703);
             this.Controls.Add(this.PnlVfrm);
             this.Name = "FrmMain";
-            this.Text = "Form1";
+            this.Text = "Cờ ca rô";
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.PnlVfrm.ResumeLayout(false);
             this.ResumeLayout(false);

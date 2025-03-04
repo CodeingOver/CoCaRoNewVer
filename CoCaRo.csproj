@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +47,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmMulCaroGame .cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMulCaroGame .Designer.cs">
+      <DependentUpon>FrmMulCaroGame .cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmConnect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmConnect.Designer.cs">
+      <DependentUpon>FrmConnect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmHuongdan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmHuongdan.Designer.cs">
+      <DependentUpon>FrmHuongdan.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,8 +79,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmMulCaroGame .resx">
+      <DependentUpon>FrmMulCaroGame .cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmCaroGame.resx">
       <DependentUpon>FrmCaroGame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmConnect.resx">
+      <DependentUpon>FrmConnect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmHuongdan.resx">
+      <DependentUpon>FrmHuongdan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>

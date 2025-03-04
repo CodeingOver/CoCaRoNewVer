@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
-using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CoCaRo
 {
-    public partial class FrmCaroGame : Form
+    public partial class FrmMulCaroGame : Form
     {
+        TcpClient client;
+        NetworkStream stream;
+        private string playerName = "Player";
         //O là player 1, X là player -1
         struct Button_pos
         {
@@ -20,9 +22,11 @@ namespace CoCaRo
         private readonly int width = 40;
         private readonly int height = 20;
         private int player = 1;
-        public FrmCaroGame()
+        public FrmMulCaroGame(TcpClient client, NetworkStream stream)
         {
             InitializeComponent();
+            this.client = client;
+            this.stream = stream;
         }
 
         private void InitializeButtons()
@@ -48,19 +52,7 @@ namespace CoCaRo
 
         private void Button_MouseEnter(object sender, EventArgs e)
         {
-            Button hoveredButton = sender as Button;
-            if (hoveredButton != null && player == 1)
-            {
-                hoveredButton.BackgroundImage = Properties.Resources.O_icon;
-                hoveredButton.ImageAlign = ContentAlignment.MiddleCenter;
-                hoveredButton.BackgroundImageLayout = ImageLayout.Stretch;
-            }
-            else if (hoveredButton != null && player == -1)
-            {
-                hoveredButton.BackgroundImage = Properties.Resources.icons8_x_50;
-                hoveredButton.ImageAlign = ContentAlignment.MiddleCenter;
-                hoveredButton.BackgroundImageLayout = ImageLayout.Stretch;
-            }
+
         }
 
         private void Button_Click(object sender, EventArgs e)
@@ -95,7 +87,7 @@ namespace CoCaRo
                 int j = pos.y;
                 int playerCheck = pos.player;
 
-                if (playerCheck == -1)
+                if(playerCheck == -1)
                 {
                     LblPlayer.ForeColor = Color.Green;
                     LblPlayer.Text = "Player: O turn";
@@ -105,7 +97,7 @@ namespace CoCaRo
                     LblPlayer.ForeColor = Color.Red;
                     LblPlayer.Text = "Player: X turn";
                 }
-                // Gọi hàm kiểm tra chiến thắng với vị trí i, j
+                //Gọi hàm kiểm tra chiến thắng với vị trí i, j
                 if (CheckWin(i, j) == 1)
                 {
                     LblPlayer.Text = "Player O wins!";
@@ -118,14 +110,59 @@ namespace CoCaRo
                 }
 
                 clickedButton.Enabled = false;
+                
+                //player = -player;//chuyên đổi lượt chơi sẽ do server quản lý
+            }
+        }
 
-                player = -player;
+        private void BtnSend_Click(object sender, EventArgs e)
+        {
+            if(TxtChatBoxText.Text == "")
+            {
+                return;
+            }
+            AppendTextToChatBox(playerName + ": " + TxtChatBoxText.Text);
+            TxtChatBoxText.Text = "";
 
 
-                if(BtnNewGame.Visible == false)
-                {
-                    BotMove();
-                }
+            //SendData(playerName + ": " + TxtChatBoxText.Text);
+        }
+
+        private void SendData(string playerName)
+        {
+            string message = "";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+        }
+
+        private void ReceiveData()
+        {
+            byte[] data = new byte[1024];
+            int bytes = stream.Read(data, 0, data.Length);
+            string message = Encoding.UTF8.GetString(data, 0, bytes);
+            string[] arr = message.Split('|');
+            int i = int.Parse(arr[0]);
+            int j = int.Parse(arr[1]);
+            int player = int.Parse(arr[2]);
+            if (player == 1)
+            {
+                btn[i, j].BackgroundImage = Properties.Resources.O_icon;
+                btn[i, j].Enabled = false;
+            }
+            else if (player == -1)
+            {
+                btn[i, j].BackgroundImage = Properties.Resources.icons8_x_50;
+                btn[i, j].Enabled = false;
+            }
+            if (CheckWin(i, j) == 1)
+            {
+                LblPlayer.Text = "Player O wins!";
+                GameEnd();
+            }
+            else if (CheckWin(i, j) == -1)
+            {
+                LblPlayer.Text = "Player X wins!";
+                GameEnd();
             }
         }
 
@@ -145,6 +182,7 @@ namespace CoCaRo
             LblPlayer.Text = "Player: O turn";
             BtnRestart.Visible = true;
             InitializeButtons();
+
         }
 
         private void Button_MouseLeave(object sender, EventArgs e)
@@ -571,7 +609,6 @@ namespace CoCaRo
             BtnNewGame.Visible = true;
             BtnRestart.Visible = false;
         }
-
         private void BtnNewGame_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < height; i++)
@@ -596,70 +633,20 @@ namespace CoCaRo
             this.Close();
         }
 
-        private void BotMove()
+        private void TxtChatBoxText_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Thêm độ trễ 1 giây (1000 milliseconds)
-            //await Task.Delay(1000);
-
-            // Tìm các ô trống
-            var emptyPositions = new List<Button>();
-            for (int i = 0; i < height; i++)
+            if(e.KeyChar == (char)Keys.Enter)
             {
-                for (int j = 0; j < width; j++)
-                {
-                    if (((Button_pos)btn[i, j].Tag).player == 0)
-                    {
-                        emptyPositions.Add(btn[i, j]);
-                    }
-                }
+                BtnSend.PerformClick();
+                e.Handled = true;
             }
+        }
 
-            // Chọn ngẫu nhiên một ô trống để di chuyển
-            if (emptyPositions.Count > 0)
-            {
-                int index = new Random().Next(emptyPositions.Count);
-                Button botButton = emptyPositions[index];
-
-                botButton.BackgroundImage = Properties.Resources.icons8_x_50;
-                botButton.ImageAlign = ContentAlignment.MiddleCenter;
-                botButton.BackgroundImageLayout = ImageLayout.Stretch;
-
-                int Save_i = ((Button_pos)botButton.Tag).x;
-                int Save_j = ((Button_pos)botButton.Tag).y;
-                botButton.Tag = new Button_pos { x = Save_i, y = Save_j, player = -1 };
-
-                // Lấy vị trí i, j từ thuộc tính Tag
-                Button_pos pos = (Button_pos)botButton.Tag;
-                int i = pos.x;
-                int j = pos.y;
-                int playerCheck = pos.player;
-
-                if (playerCheck == -1)
-                {
-                    LblPlayer.ForeColor = Color.Green;
-                    LblPlayer.Text = "Player: O turn";
-                }
-                else if (playerCheck == 1)
-                {
-                    LblPlayer.ForeColor = Color.Red;
-                    LblPlayer.Text = "Player: X turn";
-                }
-                // Gọi hàm kiểm tra chiến thắng với vị trí i, j
-                if (CheckWin(i, j) == 1)
-                {
-                    LblPlayer.Text = "Player O wins!";
-                    GameEnd();
-                }
-                else if (CheckWin(i, j) == -1)
-                {
-                    LblPlayer.Text = "Player X wins!";
-                    GameEnd();
-                }
-
-                botButton.Enabled = false;
-
-                player = -player;
-            }
+        private void AppendTextToChatBox(string text)
+        {
+            TxtChatBox.AppendText(text + Environment.NewLine);
+            TxtChatBox.SelectionStart = TxtChatBox.Text.Length;
+            TxtChatBox.ScrollToCaret();
         }
     }
 }
