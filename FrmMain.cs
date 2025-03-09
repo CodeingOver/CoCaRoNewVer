@@ -52,32 +52,21 @@ namespace CoCaRo
         private void BtnMutiplayer_Click(object sender, EventArgs e)
         {
             //connect to server
-            //VisiableButton(false);
-            //connectForm = new FrmConnect();
-
-            //connectForm.TopLevel = false;
-
-            //connectForm.ConnectClicked += ConnectForm_ConnectClicked;
-            //connectForm.FormClosed += (s, args) => VisiableButton(true);
-
-            //this.PnlVfrm.Controls.Add(connectForm);
-
-            //connectForm.StartPosition = FormStartPosition.Manual; // Đặt vị trí khởi tạo của Form là thủ công
-            //connectForm.SetDesktopLocation(400, 200); // Đặt vị trí của Form
-
-            //connectForm.Show();
-
             VisiableButton(false);
+            connectForm = new FrmConnect();
 
-            FrmMulCaroGame Mulcaro = new FrmMulCaroGame(client, stream);
-            Mulcaro.TopLevel = false;
-            Mulcaro.Dock = DockStyle.Fill;
+            connectForm.TopLevel = false;
 
-            Mulcaro.FormClosed += (s, args) => DisconnectServer();
-            Mulcaro.FormClosed += (s, args) => VisiableButton(true);
+            connectForm.ConnectClicked += ConnectForm_ConnectClicked;
+            connectForm.FormClosed += (s, args) => VisiableButton(true);
 
-            this.PnlVfrm.Controls.Add(Mulcaro);
-            Mulcaro.Show();
+            this.PnlVfrm.Controls.Add(connectForm);
+
+            connectForm.StartPosition = FormStartPosition.Manual; // Đặt vị trí khởi tạo của Form là thủ công
+            connectForm.SetDesktopLocation(400, 200); // Đặt vị trí của Form
+
+            connectForm.Show();
+
         }
         
         private async void ConnectForm_ConnectClicked(object sender, ConnectEventArgs e)

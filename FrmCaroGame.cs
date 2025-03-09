@@ -122,10 +122,10 @@ namespace CoCaRo
                 player = -player;
 
 
-                if(BtnNewGame.Visible == false)
-                {
-                    BotMove();
-                }
+                //if(BtnNewGame.Visible == false)
+                //{
+                //    BotMove();
+                //}
             }
         }
 

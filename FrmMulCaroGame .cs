@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CoCaRo
@@ -11,6 +13,7 @@ namespace CoCaRo
         TcpClient client;
         NetworkStream stream;
         private string playerName = "Player";
+        DateTime TimeNow;
         //O là player 1, X là player -1
         struct Button_pos
         {
@@ -52,7 +55,19 @@ namespace CoCaRo
 
         private void Button_MouseEnter(object sender, EventArgs e)
         {
-
+            Button hoveredButton = sender as Button;
+            if (hoveredButton != null && player == 1)
+            {
+                hoveredButton.BackgroundImage = Properties.Resources.O_icon;
+                hoveredButton.ImageAlign = ContentAlignment.MiddleCenter;
+                hoveredButton.BackgroundImageLayout = ImageLayout.Stretch;
+            }
+            else if (hoveredButton != null && player == -1)
+            {
+                hoveredButton.BackgroundImage = Properties.Resources.icons8_x_50;
+                hoveredButton.ImageAlign = ContentAlignment.MiddleCenter;
+                hoveredButton.BackgroundImageLayout = ImageLayout.Stretch;
+            }
         }
 
         private void Button_Click(object sender, EventArgs e)
@@ -121,29 +136,56 @@ namespace CoCaRo
             {
                 return;
             }
-            AppendTextToChatBox(playerName + ": " + TxtChatBoxText.Text);
-            TxtChatBoxText.Text = "";
-
-
-            //SendData(playerName + ": " + TxtChatBoxText.Text);
-        }
-
-        private void SendData(string playerName)
-        {
-            string message = "";
+            string message = $"CHAT|{"["+playerName+"]: " + TxtChatBoxText.Text}";
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
+
+            TimeNow = DateTime.Now;
+            AppendTextToChatBox(TimeNow.ToString("HH:mm:ss") + " ["+playerName+"]: " + TxtChatBoxText.Text);
+
+            TxtChatBoxText.Text = "";
         }
 
-        private void ReceiveData()
+        private async Task ReceiveData()
         {
             byte[] data = new byte[1024];
-            int bytes = stream.Read(data, 0, data.Length);
-            string message = Encoding.UTF8.GetString(data, 0, bytes);
-            string[] arr = message.Split('|');
-            int i = int.Parse(arr[0]);
-            int j = int.Parse(arr[1]);
-            int player = int.Parse(arr[2]);
+            while(true)
+            {
+                try
+                {
+                    int bytes =await stream.ReadAsync(data, 0, data.Length);
+                    if(bytes == 0)
+                    {
+                        Invoke(new Action(() => AppendTextToChatBox("Server has disconnected")));
+                        break;
+                    }
+
+                    string message = Encoding.UTF8.GetString(data, 0, bytes);
+                    string[] arr = message.Split('|');
+                    if (arr[0] == "MOVE")
+                    {
+                        int i = int.Parse(arr[1]);
+                        int j = int.Parse(arr[2]);
+                        int player = int.Parse(arr[3]);
+                        Invoke(new Action(() => HandleMove(i, j, player)));
+                    }
+                    else if (arr[0] == "CHAT")
+                    {
+                        string chatMessage = arr[1];
+                        TimeNow = DateTime.Now;
+                        Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss")+" " + chatMessage)));
+                    }
+                }
+                catch
+                {
+                    break;
+                }
+            }
+            Invoke(new Action(()=> this.Close()));
+        }
+
+        private void HandleMove(int i, int j, int player)
+        {
             if (player == 1)
             {
                 btn[i, j].BackgroundImage = Properties.Resources.O_icon;
@@ -183,6 +225,7 @@ namespace CoCaRo
             BtnRestart.Visible = true;
             InitializeButtons();
 
+            _ = Task.Run(() => ReceiveData());
         }
 
         private void Button_MouseLeave(object sender, EventArgs e)
@@ -648,5 +691,6 @@ namespace CoCaRo
             TxtChatBox.SelectionStart = TxtChatBox.Text.Length;
             TxtChatBox.ScrollToCaret();
         }
+
     }
 }
