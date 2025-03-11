@@ -10,8 +10,8 @@ namespace CoCaRo
 {
     public partial class FrmMulCaroGame : Form
     {
-        TcpClient client;
-        NetworkStream stream;
+        private TcpClient client;
+        private NetworkStream stream;
         private string playerName = "Player";
         DateTime TimeNow;
         //O là player 1, X là player -1
@@ -24,7 +24,7 @@ namespace CoCaRo
         private Button[,] btn;
         private readonly int width = 40;
         private readonly int height = 20;
-        private int player = 1;
+        private int player = -2;
         public FrmMulCaroGame(TcpClient client, NetworkStream stream)
         {
             InitializeComponent();
@@ -39,12 +39,14 @@ namespace CoCaRo
             {
                 for (int j = 0; j < width; j++)
                 {
-                    btn[i, j] = new Button();
-                    btn[i, j].Size = new Size(30, 30);
-                    btn[i, j].Location = new Point(j * 30, (i * 30) + 100);
-                    btn[i, j].TabStop = false;
-                    btn[i, j].Image = Properties.Resources.O_icon;
-                    btn[i, j].Tag = new Button_pos { x = i, y = j, player = 0 }; // Lưu trữ vị trí i, j trong thuộc tính Tag
+                    btn[i, j] = new Button
+                    {
+                        Size = new Size(30, 30),
+                        Location = new Point(j * 30, (i * 30) + 100),
+                        TabStop = false,
+                        Image = Properties.Resources.O_icon,
+                        Tag = new Button_pos { x = i, y = j, player = 0 } // Lưu trữ vị trí i, j trong thuộc tính Tag
+                    };
                     btn[i, j].Click += new EventHandler(Button_Click); // Gán sự kiện Click
                     btn[i, j].MouseEnter += new EventHandler(Button_MouseEnter); // Gán sự kiện MouseEnter
                     btn[i, j].MouseLeave += new EventHandler(Button_MouseLeave); // Gán sự kiện MouseLeave
@@ -100,14 +102,13 @@ namespace CoCaRo
                 Button_pos pos = (Button_pos)clickedButton.Tag;
                 int i = pos.x;
                 int j = pos.y;
-                int playerCheck = pos.player;
 
-                if(playerCheck == -1)
+                if(player == -1)
                 {
                     LblPlayer.ForeColor = Color.Green;
                     LblPlayer.Text = "Player: O turn";
                 }
-                else if (playerCheck == 1)
+                else if (player == 1)
                 {
                     LblPlayer.ForeColor = Color.Red;
                     LblPlayer.Text = "Player: X turn";
@@ -125,9 +126,17 @@ namespace CoCaRo
                 }
 
                 clickedButton.Enabled = false;
-                
+                SendData(i, j, player);
+
                 //player = -player;//chuyên đổi lượt chơi sẽ do server quản lý
             }
+        }
+
+        private void SendData(int i,int j,int player)
+        {
+            string message = "MOVE|" +playerName+"|"+ i + "|" + j + "|" + player;
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
@@ -136,7 +145,7 @@ namespace CoCaRo
             {
                 return;
             }
-            string message = $"CHAT|{"["+playerName+"]: " + TxtChatBoxText.Text}";
+            string message = "CHAT|"+playerName+"|"+TxtChatBoxText.Text;
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
 
@@ -164,16 +173,19 @@ namespace CoCaRo
                     string[] arr = message.Split('|');
                     if (arr[0] == "MOVE")
                     {
-                        int i = int.Parse(arr[1]);
-                        int j = int.Parse(arr[2]);
-                        int player = int.Parse(arr[3]);
+                        string chatMessageName = arr[1];
+                        int i = int.Parse(arr[2]);
+                        int j = int.Parse(arr[3]);
+                        int player = int.Parse(arr[4]);
                         Invoke(new Action(() => HandleMove(i, j, player)));
+                        Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss") + " [" + chatMessageName + "]: " + "has played at " + i + " " + j)));
                     }
                     else if (arr[0] == "CHAT")
                     {
-                        string chatMessage = arr[1];
+                        string chatMessageName = arr[1];
+                        string chatMessage = arr[2];
                         TimeNow = DateTime.Now;
-                        Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss")+" " + chatMessage)));
+                        Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss") + " [" + chatMessageName + "]: " + chatMessage)));
                     }
                 }
                 catch

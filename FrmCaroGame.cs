@@ -32,12 +32,14 @@ namespace CoCaRo
             {
                 for (int j = 0; j < width; j++)
                 {
-                    btn[i, j] = new Button();
-                    btn[i, j].Size = new Size(30, 30);
-                    btn[i, j].Location = new Point(j * 30, (i * 30) + 100);
-                    btn[i, j].TabStop = false;
-                    btn[i, j].Image = Properties.Resources.O_icon;
-                    btn[i, j].Tag = new Button_pos { x = i, y = j, player = 0 }; // Lưu trữ vị trí i, j trong thuộc tính Tag
+                    btn[i, j] = new Button
+                    {
+                        Size = new Size(30, 30),
+                        Location = new Point(j * 30, (i * 30) + 100),
+                        TabStop = false,
+                        Image = Properties.Resources.O_icon,
+                        Tag = new Button_pos { x = i, y = j, player = 0 } // Lưu trữ vị trí i, j trong thuộc tính Tag
+                    };
                     btn[i, j].Click += new EventHandler(Button_Click); // Gán sự kiện Click
                     btn[i, j].MouseEnter += new EventHandler(Button_MouseEnter); // Gán sự kiện MouseEnter
                     btn[i, j].MouseLeave += new EventHandler(Button_MouseLeave); // Gán sự kiện MouseLeave

@@ -21,9 +21,11 @@ namespace CoCaRo
             VisiableButton(false);
 
             // Tạo một instance của FrmCaroGame
-            FrmCaroGame caro = new FrmCaroGame();
-            caro.TopLevel = false;
-            caro.Dock = DockStyle.Fill; // Đặt form con để lấp đầy panel
+            FrmCaroGame caro = new FrmCaroGame
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill // Đặt form con để lấp đầy panel
+            };
 
             caro.FormClosed += (s, args) => VisiableButton(true);
 
@@ -53,9 +55,10 @@ namespace CoCaRo
         {
             //connect to server
             VisiableButton(false);
-            connectForm = new FrmConnect();
-
-            connectForm.TopLevel = false;
+            connectForm = new FrmConnect
+            {
+                TopLevel = false
+            };
 
             connectForm.ConnectClicked += ConnectForm_ConnectClicked;
             connectForm.FormClosed += (s, args) => VisiableButton(true);
@@ -86,9 +89,11 @@ namespace CoCaRo
 
                 VisiableButton(false);
 
-                FrmMulCaroGame Mulcaro = new FrmMulCaroGame(client, stream);
-                Mulcaro.TopLevel = false;
-                Mulcaro.Dock = DockStyle.Fill;
+                FrmMulCaroGame Mulcaro = new FrmMulCaroGame(client, stream)
+                {
+                    TopLevel = false,
+                    Dock = DockStyle.Fill
+                };
 
                 Mulcaro.FormClosed += (s, args) => DisconnectServer();
                 Mulcaro.FormClosed += (s, args) => VisiableButton(true);
@@ -107,8 +112,13 @@ namespace CoCaRo
         {
             if (client != null)
             {
-                stream.Close();
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream = null;
+                }
                 client.Close();
+                client = null;
                 MessageBox.Show("Disconnected from server.");
             }
         }
@@ -117,9 +127,11 @@ namespace CoCaRo
         {
             VisiableButton(false);
 
-            FrmHuongdan huongdan = new FrmHuongdan();
-            huongdan.TopLevel = false;
-            huongdan.Dock = DockStyle.Fill;
+            FrmHuongdan huongdan = new FrmHuongdan
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
 
             huongdan.FormClosed += (s, args) => VisiableButton(true);
 
