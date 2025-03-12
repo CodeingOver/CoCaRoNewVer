@@ -178,7 +178,6 @@ namespace CoCaRo
                         int j = int.Parse(arr[3]);
                         int player = int.Parse(arr[4]);
                         Invoke(new Action(() => HandleMove(i, j, player)));
-                        Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss") + " [" + chatMessageName + "]: " + "has played at " + i + " " + j)));
                     }
                     else if (arr[0] == "CHAT")
                     {
@@ -201,11 +200,15 @@ namespace CoCaRo
             if (player == 1)
             {
                 btn[i, j].BackgroundImage = Properties.Resources.O_icon;
+                btn[i, j].ImageAlign = ContentAlignment.MiddleCenter;
+                btn[i, j].BackgroundImageLayout = ImageLayout.Stretch;
                 btn[i, j].Enabled = false;
             }
             else if (player == -1)
             {
                 btn[i, j].BackgroundImage = Properties.Resources.icons8_x_50;
+                btn[i, j].ImageAlign = ContentAlignment.MiddleCenter;
+                btn[i, j].BackgroundImageLayout = ImageLayout.Stretch;
                 btn[i, j].Enabled = false;
             }
             if (CheckWin(i, j) == 1)
