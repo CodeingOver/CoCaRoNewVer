@@ -36,6 +36,8 @@
             this.TxtChatBox = new System.Windows.Forms.TextBox();
             this.TxtChatBoxText = new System.Windows.Forms.TextBox();
             this.BtnSend = new System.Windows.Forms.Button();
+            this.LblTurn = new System.Windows.Forms.Label();
+            this.LblGamestart = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -56,9 +58,9 @@
             this.LblPlayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblPlayer.Location = new System.Drawing.Point(1051, 56);
             this.LblPlayer.Name = "LblPlayer";
-            this.LblPlayer.Size = new System.Drawing.Size(77, 25);
+            this.LblPlayer.Size = new System.Drawing.Size(96, 25);
             this.LblPlayer.TabIndex = 2;
-            this.LblPlayer.Text = "Lblhere";
+            this.LblPlayer.Text = "Đang chờ";
             // 
             // BtnNewGame
             // 
@@ -120,11 +122,33 @@
             this.BtnSend.UseVisualStyleBackColor = true;
             this.BtnSend.Click += new System.EventHandler(this.BtnSend_Click);
             // 
+            // LblTurn
+            // 
+            this.LblTurn.AutoSize = true;
+            this.LblTurn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblTurn.Location = new System.Drawing.Point(666, 56);
+            this.LblTurn.Name = "LblTurn";
+            this.LblTurn.Size = new System.Drawing.Size(27, 25);
+            this.LblTurn.TabIndex = 7;
+            this.LblTurn.Text = "ttt";
+            // 
+            // LblGamestart
+            // 
+            this.LblGamestart.AutoSize = true;
+            this.LblGamestart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblGamestart.Location = new System.Drawing.Point(523, 14);
+            this.LblGamestart.Name = "LblGamestart";
+            this.LblGamestart.Size = new System.Drawing.Size(27, 25);
+            this.LblGamestart.TabIndex = 7;
+            this.LblGamestart.Text = "ttt";
+            // 
             // FrmMulCaroGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1702, 703);
+            this.Controls.Add(this.LblGamestart);
+            this.Controls.Add(this.LblTurn);
             this.Controls.Add(this.BtnSend);
             this.Controls.Add(this.TxtChatBoxText);
             this.Controls.Add(this.TxtChatBox);
@@ -151,6 +175,8 @@
         private System.Windows.Forms.TextBox TxtChatBox;
         private System.Windows.Forms.TextBox TxtChatBoxText;
         private System.Windows.Forms.Button BtnSend;
+        private System.Windows.Forms.Label LblTurn;
+        private System.Windows.Forms.Label LblGamestart;
     }
 }
 

@@ -77,6 +77,12 @@
     <Compile Include="FrmCaroGame.Designer.cs">
       <DependentUpon>FrmCaroGame.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmYourName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmYourName.Designer.cs">
+      <DependentUpon>FrmYourName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FrmMulCaroGame .resx">
@@ -93,6 +99,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmYourName.resx">
+      <DependentUpon>FrmYourName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
