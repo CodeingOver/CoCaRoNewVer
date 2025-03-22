@@ -14,7 +14,8 @@ namespace CoCaRo
         private NetworkStream stream;
         private string playerName = "Player";
         DateTime TimeNow;
-        private Timer timer;
+
+        //private Timer timer;
         //O là player 1, X là player -1
         struct Button_pos
         {
@@ -96,7 +97,7 @@ namespace CoCaRo
 
                 if (YourTurn == false)
                 {
-                    LblTurn.Text = "Chưa tới lượt của bạn";
+                    LblTurn.Text = "Chờ tới lượt của bạn";
                     return;
                 }
 
@@ -129,7 +130,7 @@ namespace CoCaRo
                 //Gọi hàm kiểm tra chiến thắng với vị trí i, j
                 if (CheckWin(i, j) == 1)
                 {
-                    LblPlayer.ForeColor = Color.Red;
+                    LblPlayer.ForeColor = Color.Green;
                     LblPlayer.Text = "O wins!";
                     GameEnd();
                 }
@@ -141,6 +142,8 @@ namespace CoCaRo
                 }
 
                 YourTurn = false;
+                LblTurn.Text = "Chờ tới lượt của bạn";
+
                 clickedButton.Enabled = false;
                 SendData(i, j, player);
 
@@ -192,60 +195,77 @@ namespace CoCaRo
                         int i = int.Parse(arr[2]);
                         int j = int.Parse(arr[3]);
                         int player = int.Parse(arr[4]);
+                        Invoke(new Action(() => HandleMove(i, j, player)));
                         if (arr[5]== "OK")
                         {
                             YourTurn = true;
                             LblTurn.Text = "Lượt của bạn";
                         }
-                        Invoke(new Action(() => HandleMove(i, j, player)));
                     }
-
-                    if (arr[0] == "CHAT")
+                    else if (arr[0] == "CHAT")
                     {
                         string chatMessageName = arr[1];
                         string chatMessage = arr[2];
                         TimeNow = DateTime.Now;
                         Invoke(new Action(() => AppendTextToChatBox(TimeNow.ToString("HH:mm:ss") + " [" + chatMessageName + "]: " + chatMessage)));
                     }
-
-                    if (arr[0] == "YOURTICK")
+                    else if(arr[0] == "YOURTICK")
                     {
                         if(arr[1] == "O")
                         {
                             player = 1;
+                            Invoke(new Action(() => LblPlayer.ForeColor = Color.Green));
                             Invoke(new Action(() => LblPlayer.Text = "Bạn là: O "));
                         }
                         else if (arr[1] == "X")
                         {
                             player = -1;
+                            Invoke(new Action(() => LblPlayer.ForeColor = Color.Red));
                             Invoke(new Action(() => LblPlayer.Text = "Bạn là: X "));
                         }
 
                         if(arr[2] == "1")
                         {
                             YourTurn = true;
-                            LblTurn.Text = "Lượt của bạn";
+                            Invoke(new Action(() => LblTurn.Text = "Lượt của bạn"));
                         }
                         else if (arr[2] == "2")
                         {
                             YourTurn = false;
-                            LblTurn.Text = "Chờ lượt của bạn";
+                            Invoke(new Action(() => LblTurn.Text = "Chờ lượt của bạn"));
+                        }
+
+                        Invoke(new Action(() => LblGamestart.Text = "Game bắt đầu"));
+                    }
+                    else if(arr[0] == "CLIENT")
+                    {
+                        isStart = int.Parse(arr[1]);
+                        if (isStart == 2)
+                        {
+                            Invoke(new Action(() => LblGamestart.Text = "Đã đủ 2 người chơi"));
+                            Invoke(new Action(() => BtnNewGame.PerformClick()));
+                        }
+                        else if (isStart == 1)
+                        {
+                            Invoke(new Action(() => LblGamestart.Text = "Chờ người chơi thứ 2"));
+                        }
+                    }
+                    else if(arr[0] == "NEWGAME")
+                    {
+                        if(arr[1] == "OK")
+                        {
+                            if(MessageBox.Show("Người chơi yêu cầu làm ván mới", "Thông báo", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                Invoke(new Action(() => SendNewGame()));
+                                Invoke(new Action(() => NewGame()));
+                            }
+                        }
+                        else if (arr[1] == "OKOK")
+                        {
+                            Invoke(new Action(() => NewGame()));
                         }
                     }
 
-                    if(arr[0] == "CLIENT")
-                    {
-                        isStart = int.Parse(arr[1]);
-                        MessageBox.Show(arr[1]);
-                        //if(isStart == 2)
-                        //{
-                        //    Invoke(new Action(() => LblGamestart.Text = "Đủ người chơi"));
-                        //    //timer = new Timer();
-                        //    //timer.Interval = 1000; // 1 second
-                        //    //timer.Tick += Timer_Tick;
-                        //    //timer.Start();
-                        //}
-                    }
 
                 }
                 catch
@@ -263,6 +283,11 @@ namespace CoCaRo
                 btn[i, j].BackgroundImage = Properties.Resources.O_icon;
                 btn[i, j].ImageAlign = ContentAlignment.MiddleCenter;
                 btn[i, j].BackgroundImageLayout = ImageLayout.Stretch;
+
+                int Save_i = ((Button_pos)btn[i, j].Tag).x;
+                int Save_j = ((Button_pos)btn[i, j].Tag).y;
+                btn[i, j].Tag = new Button_pos { x = Save_i, y = Save_j, player = 1 };
+
                 btn[i, j].Enabled = false;
             }
             else if (player == -1)
@@ -270,15 +295,22 @@ namespace CoCaRo
                 btn[i, j].BackgroundImage = Properties.Resources.icons8_x_50;
                 btn[i, j].ImageAlign = ContentAlignment.MiddleCenter;
                 btn[i, j].BackgroundImageLayout = ImageLayout.Stretch;
+
+                int Save_i = ((Button_pos)btn[i, j].Tag).x;
+                int Save_j = ((Button_pos)btn[i, j].Tag).y;
+                btn[i, j].Tag = new Button_pos { x = Save_i, y = Save_j, player = -1 };
+
                 btn[i, j].Enabled = false;
             }
             if (CheckWin(i, j) == 1)
             {
+                LblPlayer.ForeColor = Color.Green;
                 LblPlayer.Text = "O wins!";
                 GameEnd();
             }
             else if (CheckWin(i, j) == -1)
             {
+                LblPlayer.ForeColor = Color.Red;
                 LblPlayer.Text = "X wins!";
                 GameEnd();
             }
@@ -304,7 +336,6 @@ namespace CoCaRo
                 playerName = frmYourName.PlayerName;
             }
 
-          
             _ = Task.Run(() => ReceiveData());
         }
 
@@ -735,6 +766,20 @@ namespace CoCaRo
 
         private void BtnNewGame_Click(object sender, EventArgs e)
         {
+            string message = "NEWGAME|OK";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+        }
+
+        private void SendNewGame()
+        {
+            string message = "NEWGAME|OKOK";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+        }
+
+        private void NewGame()
+        {
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
@@ -744,9 +789,6 @@ namespace CoCaRo
                     btn[i, j].Tag = new Button_pos { x = i, y = j, player = 0 };
                 }
             }
-            player = 1;
-            LblPlayer.Text = "Player: O turn";
-            LblPlayer.ForeColor = Color.Green;
 
             BtnNewGame.Visible = false;
             BtnRestart.Visible = true;

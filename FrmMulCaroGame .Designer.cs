@@ -126,21 +126,21 @@
             // 
             this.LblTurn.AutoSize = true;
             this.LblTurn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblTurn.Location = new System.Drawing.Point(666, 56);
+            this.LblTurn.Location = new System.Drawing.Point(714, 56);
             this.LblTurn.Name = "LblTurn";
-            this.LblTurn.Size = new System.Drawing.Size(27, 25);
+            this.LblTurn.Size = new System.Drawing.Size(96, 25);
             this.LblTurn.TabIndex = 7;
-            this.LblTurn.Text = "ttt";
+            this.LblTurn.Text = "Đang chờ";
             // 
             // LblGamestart
             // 
             this.LblGamestart.AutoSize = true;
             this.LblGamestart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblGamestart.Location = new System.Drawing.Point(523, 14);
+            this.LblGamestart.Location = new System.Drawing.Point(471, 83);
             this.LblGamestart.Name = "LblGamestart";
-            this.LblGamestart.Size = new System.Drawing.Size(27, 25);
+            this.LblGamestart.Size = new System.Drawing.Size(237, 25);
             this.LblGamestart.TabIndex = 7;
-            this.LblGamestart.Text = "ttt";
+            this.LblGamestart.Text = "Đang chờ người chơi khác";
             // 
             // FrmMulCaroGame
             // 
