@@ -20,6 +20,7 @@ namespace CoCaRo
         private readonly int width = 40;
         private readonly int height = 20;
         private int player = 1;
+        private bool isGameOver = false;
         public FrmCaroGame()
         {
             InitializeComponent();
@@ -121,13 +122,10 @@ namespace CoCaRo
 
                 clickedButton.Enabled = false;
 
-                player = -player;
+                //player = -player;
 
-
-                //if(BtnNewGame.Visible == false)
-                //{
-                //    BotMove();
-                //}
+                //bot o day
+                MessageBox.Show(EvaluatePosition(i,j).ToString());
             }
         }
 
@@ -361,6 +359,7 @@ namespace CoCaRo
                     win = 1;
                     return win;
                 }
+
             }
 
             else if (Checkplayer == -1)//Đang check X
@@ -572,6 +571,7 @@ namespace CoCaRo
             }
             BtnNewGame.Visible = true;
             BtnRestart.Visible = false;
+            isGameOver = true;
         }
 
         private void BtnNewGame_Click(object sender, EventArgs e)
@@ -598,70 +598,254 @@ namespace CoCaRo
             this.Close();
         }
 
-        private void BotMove()
-        {
-            // Thêm độ trễ 1 giây (1000 milliseconds)
-            //await Task.Delay(1000);
+        //private int EvaluateBoard()
+        //{
+        //    int score = 0;
 
-            // Tìm các ô trống
-            var emptyPositions = new List<Button>();
-            for (int i = 0; i < height; i++)
+        //    // Duyệt qua tất cả các ô trên bàn cờ
+        //    for (int i = 0; i < height; i++)
+        //    {
+        //        for (int j = 0; j < width; j++)
+        //        {
+        //            if (((Button_pos)btn[i, j].Tag).player != 0)
+        //            {
+        //                score += EvaluatePosition(i, j);
+        //            }
+        //        }
+        //    }
+
+        //    return score;
+        //}
+
+        private int EvaluatePosition(int i, int j)
+        {
+            int score = 0;
+
+            // Đánh giá theo 4 hướng: ngang, dọc, chéo chính, chéo phụ
+            score += EvaluateDirection(i, j); 
+
+            return score;
+        }
+
+        private int EvaluateDirection(int i, int j)
+        {
+            int score = 0;
+            Button_pos[] pos = new Button_pos[5];
+
+            // Check horizontal direction
+            for (int k = 0; k < 5; k++)
             {
-                for (int j = 0; j < width; j++)
+                if (j + k < width)
                 {
-                    if (((Button_pos)btn[i, j].Tag).player == 0)
+                    pos[k] = (Button_pos)btn[i, j + k].Tag;
+                    if (pos[k].player != 1)
                     {
-                        emptyPositions.Add(btn[i, j]);
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
                     }
                 }
             }
 
-            // Chọn ngẫu nhiên một ô trống để di chuyển
-            if (emptyPositions.Count > 0)
+            for (int k = 0; k < 5; k++)
             {
-                int index = new Random().Next(emptyPositions.Count);
-                Button botButton = emptyPositions[index];
-
-                botButton.BackgroundImage = Properties.Resources.icons8_x_50;
-                botButton.ImageAlign = ContentAlignment.MiddleCenter;
-                botButton.BackgroundImageLayout = ImageLayout.Stretch;
-
-                int Save_i = ((Button_pos)botButton.Tag).x;
-                int Save_j = ((Button_pos)botButton.Tag).y;
-                botButton.Tag = new Button_pos { x = Save_i, y = Save_j, player = -1 };
-
-                // Lấy vị trí i, j từ thuộc tính Tag
-                Button_pos pos = (Button_pos)botButton.Tag;
-                int i = pos.x;
-                int j = pos.y;
-                int playerCheck = pos.player;
-
-                if (playerCheck == -1)
+                if (j - k >= 0)
                 {
-                    LblPlayer.ForeColor = Color.Green;
-                    LblPlayer.Text = "Player: O turn";
+                    pos[k] = (Button_pos)btn[i, j - k].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
                 }
-                else if (playerCheck == 1)
-                {
-                    LblPlayer.ForeColor = Color.Red;
-                    LblPlayer.Text = "Player: X turn";
-                }
-                // Gọi hàm kiểm tra chiến thắng với vị trí i, j
-                if (CheckWin(i, j) == 1)
-                {
-                    LblPlayer.Text = "Player O wins!";
-                    GameEnd();
-                }
-                else if (CheckWin(i, j) == -1)
-                {
-                    LblPlayer.Text = "Player X wins!";
-                    GameEnd();
-                }
-
-                botButton.Enabled = false;
-
-                player = -player;
             }
+
+            // Check vertical direction
+            for (int k = 0; k < 5; k++)
+            {
+                if (i + k < height)
+                {
+                    pos[k] = (Button_pos)btn[i + k, j].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            for (int k = 0; k < 5; k++)
+            {
+                if (i - k >= 0)
+                {
+                    pos[k] = (Button_pos)btn[i - k, j].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            // Check main diagonal direction
+            for (int k = 0; k < 5; k++)
+            {
+                if (i + k < height && j + k < width)
+                {
+                    pos[k] = (Button_pos)btn[i + k, j + k].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            for (int k = 0; k < 5; k++)
+            {
+                if (i - k >= 0 && j - k >= 0)
+                {
+                    pos[k] = (Button_pos)btn[i - k, j - k].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            // Check secondary diagonal direction
+            for (int k = 0; k < 5; k++)
+            {
+                if (i + k < height && j - k >= 0)
+                {
+                    pos[k] = (Button_pos)btn[i + k, j - k].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            for (int k = 0; k < 5; k++)
+            {
+                if (i - k >= 0 && j + k < width)
+                {
+                    pos[k] = (Button_pos)btn[i - k, j + k].Tag;
+                    if (pos[k].player != 1)
+                    {
+                        break;
+                    }
+                    if (pos[k].player == 1)
+                    {
+                        score++;
+                    }
+                }
+            }
+
+            return score;
         }
+
+        //private int Minimax(int depth, int alpha, int beta, bool maximizingPlayer)
+        //{
+        //    if (depth == 0 || IsGameOver())
+        //    {
+        //        return EvaluateBoard();
+        //    }
+
+        //    if (maximizingPlayer)
+        //    {
+        //        int maxEval = int.MinValue;
+        //        foreach (var move in GetAvailableMoves())
+        //        {
+        //            MakeMove(move, 1);
+        //            int eval = Minimax(depth - 1, alpha, beta, false);
+        //            UndoMove(move);
+        //            maxEval = Math.Max(maxEval, eval);
+        //            alpha = Math.Max(alpha, eval);
+        //            if (beta <= alpha)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        return maxEval;
+        //    }
+        //    else
+        //    {
+        //        int minEval = int.MaxValue;
+        //        foreach (var move in GetAvailableMoves())
+        //        {
+        //            MakeMove(move, -1);
+        //            int eval = Minimax(depth - 1, alpha, beta, true);
+        //            UndoMove(move);
+        //            minEval = Math.Min(minEval, eval);
+        //            beta = Math.Min(beta, eval);
+        //            if (beta <= alpha)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        return minEval;
+        //    }
+        //}
+
+        //private List<Point> GetAvailableMoves()
+        //{
+        //    var moves = new List<Point>();
+        //    for (int i = 0; i < height; i++)
+        //    {
+        //        for (int j = 0; j < width; j++)
+        //        {
+        //            if (((Button_pos)btn[i, j].Tag).player == 0)
+        //            {
+        //                moves.Add(new Point(i, j));
+        //            }
+        //        }
+        //    }
+        //    return moves;
+        //}
+
+        //private void MakeMove(Point move, int player)
+        //{
+        //    btn[move.X, move.Y].Tag = new Button_pos { x = move.X, y = move.Y, player = player };
+        //}
+
+        //private void UndoMove(Point move)
+        //{
+        //    btn[move.X, move.Y].Tag = new Button_pos { x = move.X, y = move.Y, player = 0 };
+        //}
+
+        //private bool IsGameOver()
+        //{
+        //    if (isGameOver)
+        //    {
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
+
     }
 }

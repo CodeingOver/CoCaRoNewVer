@@ -51,7 +51,7 @@
             this.TxtName.Name = "TxtName";
             this.TxtName.Size = new System.Drawing.Size(449, 37);
             this.TxtName.TabIndex = 1;
-            this.TxtName.Text = "test";
+            this.TxtName.Text = "Player";
             this.TxtName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BtnOK

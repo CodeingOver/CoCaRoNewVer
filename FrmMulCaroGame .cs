@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Text;
@@ -30,17 +31,12 @@ namespace CoCaRo
 
         private bool YourTurn;
         private int isStart = -1;
+        private char IsXO;
         public FrmMulCaroGame(TcpClient client, NetworkStream stream)
         {
             InitializeComponent();
             this.client = client;
             this.stream = stream;
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            LblGamestart.Text = DateTime.Now.ToString("HH:mm:ss");
-
         }
 
         private void InitializeButtons()
@@ -91,7 +87,6 @@ namespace CoCaRo
                 if(isStart <= 1)
                 {
                     LblGamestart.Text = "Chưa đủ người chơi";
-                    MessageBox.Show(isStart.ToString());
                     return;
                 }
 
@@ -211,17 +206,17 @@ namespace CoCaRo
                     }
                     else if(arr[0] == "YOURTICK")
                     {
-                        if(arr[1] == "O")
+                        Invoke(new Action(() => NewGame()));
+                        if (arr[1] == "O")
                         {
                             player = 1;
-                            Invoke(new Action(() => LblPlayer.ForeColor = Color.Green));
-                            Invoke(new Action(() => LblPlayer.Text = "Bạn là: O "));
+                            IsXO = 'O';
+                           
                         }
                         else if (arr[1] == "X")
                         {
                             player = -1;
-                            Invoke(new Action(() => LblPlayer.ForeColor = Color.Red));
-                            Invoke(new Action(() => LblPlayer.Text = "Bạn là: X "));
+                            IsXO = 'X';
                         }
 
                         if(arr[2] == "1")
@@ -254,7 +249,11 @@ namespace CoCaRo
                     {
                         if(arr[1] == "OK")
                         {
-                            if(MessageBox.Show("Người chơi yêu cầu làm ván mới", "Thông báo", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            if (MessageBox.Show(this, "Người chơi yêu cầu làm ván mới", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly) == DialogResult.Yes)
+                            {
+                                Invoke(new Action(() => SendNewGame()));
+                                Invoke(new Action(() => NewGame()));
+                            }
                             {
                                 Invoke(new Action(() => SendNewGame()));
                                 Invoke(new Action(() => NewGame()));
@@ -792,6 +791,19 @@ namespace CoCaRo
 
             BtnNewGame.Visible = false;
             BtnRestart.Visible = true;
+
+            if(IsXO == 'O')
+            {
+                Invoke(new Action(() => LblPlayer.ForeColor = Color.Green));
+                Invoke(new Action(() => LblPlayer.Text = "Bạn là: O "));
+            }
+            else if(IsXO == 'X')
+            {
+                Invoke(new Action(() => LblPlayer.ForeColor = Color.Red));
+                Invoke(new Action(() => LblPlayer.Text = "Bạn là: X "));
+            }
+
+            
         }
 
         private void BtnBack_Click(object sender, EventArgs e)

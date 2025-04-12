@@ -7,8 +7,6 @@ namespace CoCaRo
 {
     public partial class FrmMain : Form
     {
-        private TcpClient client;
-        private NetworkStream stream;
         private FrmConnect connectForm;
         public FrmMain()
         {
@@ -17,19 +15,16 @@ namespace CoCaRo
 
         private void BtnPlay_Click(object sender, EventArgs e)
         {
-            // Xóa các điều khiển hiện tại trong PnlVfrm
             VisiableButton(false);
 
-            // Tạo một instance của FrmCaroGame
             FrmCaroGame caro = new FrmCaroGame
             {
                 TopLevel = false,
-                Dock = DockStyle.Fill // Đặt form con để lấp đầy panel
+                Dock = DockStyle.Fill
             };
 
             caro.FormClosed += (s, args) => VisiableButton(true);
 
-            // Thêm form con vào PnlVfrm và hiển thị nó
             this.PnlVfrm.Controls.Add(caro);
             caro.Show();
         }
@@ -43,17 +38,16 @@ namespace CoCaRo
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            this.Size = new Size(1220, 750); // Thiết lập kích cỡ của Form
-            this.FormBorderStyle = FormBorderStyle.FixedSingle; // Ngăn người dùng thay đổi kích cỡ của Form
-            this.MaximizeBox = false; // Tùy chọn: Ẩn nút phóng to
+            this.Size = new Size(1220, 750);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
 
-            this.StartPosition = FormStartPosition.Manual; // Đặt vị trí khởi tạo của Form là thủ công
-            this.SetDesktopLocation(100, 0); // Đặt vị trí của Form
+            this.StartPosition = FormStartPosition.Manual;
+            this.SetDesktopLocation(100, 0);
         }
 
         private void BtnMutiplayer_Click(object sender, EventArgs e)
         {
-            //connect to server
             VisiableButton(false);
             connectForm = new FrmConnect
             {
@@ -65,17 +59,18 @@ namespace CoCaRo
 
             this.PnlVfrm.Controls.Add(connectForm);
 
-            connectForm.StartPosition = FormStartPosition.Manual; // Đặt vị trí khởi tạo của Form là thủ công
-            connectForm.SetDesktopLocation(400, 200); // Đặt vị trí của Form
+            connectForm.StartPosition = FormStartPosition.Manual;
+            connectForm.SetDesktopLocation(400, 200);
 
             connectForm.Show();
-
         }
-        
+
         private async void ConnectForm_ConnectClicked(object sender, ConnectEventArgs e)
         {
             string IPserver = e.IPserver;
             int port = e.Port;
+            TcpClient client = null;
+            NetworkStream stream = null;
             try
             {
                 client = new TcpClient();
@@ -86,7 +81,6 @@ namespace CoCaRo
                 MessageBox.Show("Connected to server.");
                 connectForm.Close();
 
-
                 VisiableButton(false);
 
                 FrmMulCaroGame Mulcaro = new FrmMulCaroGame(client, stream)
@@ -95,30 +89,28 @@ namespace CoCaRo
                     Dock = DockStyle.Fill
                 };
 
-                Mulcaro.FormClosed += (s, args) => DisconnectServer();
+                Mulcaro.FormClosed += (s, args) => DisconnectServer(client, stream);
                 Mulcaro.FormClosed += (s, args) => VisiableButton(true);
 
                 this.PnlVfrm.Controls.Add(Mulcaro);
                 Mulcaro.Show();
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
+                client?.Close();
             }
         }
 
-        private void DisconnectServer()
+        private void DisconnectServer(TcpClient client, NetworkStream stream)
         {
+            if (stream != null)
+            {
+                stream.Close();
+            }
             if (client != null)
             {
-                if (stream != null)
-                {
-                    stream.Close();
-                    stream = null;
-                }
                 client.Close();
-                client = null;
                 MessageBox.Show("Disconnected from server.");
             }
         }
@@ -138,6 +130,5 @@ namespace CoCaRo
             this.PnlVfrm.Controls.Add(huongdan);
             huongdan.Show();
         }
-
     }
 }
